@@ -841,7 +841,7 @@ startBtn.addEventListener('click', () => {
   infoCard.classList.add('hidden');
   score = 0;
   level = 1;
-  speed = 3.0; // Starting speed when game begins
+  speed = 5.0; // Starting speed when game begins
   usedFacts = [];
   updateScoreDisplay();
   updateLevelDisplay();
