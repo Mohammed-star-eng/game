@@ -39,18 +39,27 @@ body::before {
 }
 
 #game-root {
-  width: 805px;
-  max-width: 90vw;
-  margin: 20px auto;
+  width: 100vw;
+  max-width: 100vw;
+  margin: 0;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 
     0 8px 32px rgba(0, 0, 0, 0.2),
     0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-  border-radius: 16px;
+  border-radius: 0;
   overflow: hidden;
   will-change: transform;
+}
+
+@media (min-width: 768px) {
+  #game-root {
+    width: 805px;
+    max-width: 90vw;
+    margin: 20px auto;
+    border-radius: 16px;
+  }
 }
 
 #game-header {
@@ -58,11 +67,19 @@ body::before {
   align-items: center;
   justify-content: space-between;
   background: linear-gradient(135deg, #2196f3 0%, #21cbf3 100%);
-  padding: 12px 24px;
-  border-radius: 16px 16px 0 0;
-  min-height: 70px;
+  padding: 8px 12px;
+  border-radius: 0;
+  min-height: 60px;
   position: relative;
   overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  #game-header {
+    padding: 12px 24px;
+    border-radius: 16px 16px 0 0;
+    min-height: 70px;
+  }
 }
 
 #game-header::before {
@@ -136,9 +153,9 @@ body::before {
 }
 
 #main-title {
-  font-size: 2.4em;
+  font-size: 1.8em;
   font-weight: 900;
-  letter-spacing: 3px;
+  letter-spacing: 2px;
   line-height: 1.1;
   font-family: 'Fredoka', 'Montserrat', Arial, sans-serif;
   background: linear-gradient(135deg, #FF6B35 0%, #F7931E  25%, #FFD029 50%, #FFA726 75%, #FF8A65 100%);
@@ -149,7 +166,7 @@ body::before {
   animation: titleGradient 8s ease infinite;
   width: 100%;
   display: inline-block;
-  padding: 12px 0;
+  padding: 8px 0;
   border-radius: 16px;
   position: relative;
   margin-bottom: 4px;
@@ -157,6 +174,14 @@ body::before {
   filter: drop-shadow(0 2px 6px rgba(255, 255, 41, 0.3));
   transition: transform 0.2s ease, filter 0.2s ease;
   will-change: transform;
+}
+
+@media (min-width: 768px) {
+  #main-title {
+    font-size: 2.4em;
+    letter-spacing: 3px;
+    padding: 12px 0;
+  }
 }
 
 #main-title:hover {
@@ -188,9 +213,9 @@ body::before {
 }
 
 #subtitle {
-  font-size: 1.2em;
+  font-size: 0.9em;
   color: rgba(255, 255, 255, 0.95);
-  letter-spacing: 4px;
+  letter-spacing: 2px;
   margin-top: 2px;
   font-family: 'Montserrat', Arial, sans-serif;
   font-weight: 700;
@@ -203,11 +228,19 @@ body::before {
   animation: subtitleFlow 6s ease infinite;
   position: relative;
   display: inline-block;
-  padding: 4px 16px;
+  padding: 3px 12px;
   border-radius: 20px;
   backdrop-filter: blur(2px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   transition: transform 0.2s ease, letter-spacing 0.2s ease;
+}
+
+@media (min-width: 768px) {
+  #subtitle {
+    font-size: 1.2em;
+    letter-spacing: 4px;
+    padding: 4px 16px;
+  }
 }
 
 #subtitle:hover {
@@ -286,9 +319,15 @@ body::before {
 
 main {
   background: linear-gradient(180deg, #21cbf3 0%, #2196f3 80%, #ffd029 100%);
-  border-radius: 0 0 16px 16px;
+  border-radius: 0;
   padding: 0;
   position: relative;
+}
+
+@media (min-width: 768px) {
+  main {
+    border-radius: 0 0 16px 16px;
+  }
 }
 
 #canvas-container {
@@ -426,20 +465,28 @@ main {
   margin: 0;
   margin-bottom: 0;
   border-top: none;
-  border-radius: 0 0 16px 16px;
+  border-radius: 0;
   box-shadow: 0 -4px 20px rgba(33, 150, 243, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
-  padding: 20px 32px 22px 32px;
+  padding: 16px 16px 18px 16px;
   background: linear-gradient(135deg, rgba(33, 203, 243, 0.95) 0%, rgba(33, 150, 243, 0.9) 100%);
   backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 24px;
+  gap: 16px;
   overflow: hidden;
   position: relative;
   z-index: 2;
   width: 100%;
   box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  #level-bar {
+    border-radius: 0 0 16px 16px;
+    padding: 20px 32px 22px 32px;
+    gap: 24px;
+  }
 }
 
 #level-bar::before {
@@ -795,5 +842,213 @@ main {
   }
   .cta-btn span {
     max-width: 70vw;
+  }
+}
+
+/* Mobile landscape mode optimizations */
+@media screen and (max-height: 600px) and (orientation: landscape) {
+  body {
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
+  }
+  
+  #game-root {
+    width: 100vw;
+    max-width: 100vw;
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    border-radius: 0;
+  }
+  
+  #game-header {
+    padding: 6px 12px;
+    min-height: 50px;
+    flex-shrink: 0;
+  }
+  
+  #logo {
+    width: 140px;
+    height: 38px;
+    padding: 4px 8px;
+  }
+  
+  #main-title {
+    font-size: 1.4em;
+    letter-spacing: 1.5px;
+    padding: 4px 0;
+    margin-bottom: 2px;
+  }
+  
+  #subtitle {
+    font-size: 0.8em;
+    letter-spacing: 1.5px;
+    padding: 2px 8px;
+  }
+  
+  #score-box {
+    font-size: 1.2em;
+    padding: 8px 12px;
+    min-width: 100px;
+  }
+  
+  main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
+  #canvas-container {
+    flex: 1;
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  #game-canvas {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+  }
+  
+  #level-bar {
+    padding: 8px 12px 10px 12px;
+    gap: 12px;
+    flex-shrink: 0;
+    height: auto;
+  }
+  
+  #level-label {
+    font-size: 1.1em;
+    margin-right: 12px;
+  }
+  
+  #progress-bar {
+    height: 36px;
+  }
+  
+  .star {
+    font-size: 1.8em;
+  }
+  
+  #progress-track {
+    height: 8px;
+  }
+  
+  #start-btn {
+    padding: 16px 40px;
+    font-size: 1.3em;
+  }
+  
+  #info-card,
+  #call-to-action {
+    padding: 20px 24px;
+    min-width: 200px;
+    max-width: 280px;
+    font-size: 1.1em;
+  }
+  
+  .cta-btn {
+    padding: 6px 0;
+    font-size: 0.9em;
+    min-height: 36px;
+  }
+  
+  #replay-btn {
+    margin-top: 12px;
+    margin-bottom: 2px;
+    min-height: 40px;
+  }
+  
+  #lets-go {
+    font-size: 1.8em;
+    top: calc(200px * (100vw / 805));
+  }
+}
+
+/* Extra small landscape screens (phones in landscape) */
+@media screen and (max-height: 450px) and (orientation: landscape) {
+  #game-header {
+    padding: 4px 8px;
+    min-height: 40px;
+  }
+  
+  #logo {
+    width: 120px;
+    height: 32px;
+    padding: 3px 6px;
+  }
+  
+  #main-title {
+    font-size: 1.2em;
+    letter-spacing: 1px;
+    padding: 2px 0;
+    margin-bottom: 1px;
+  }
+  
+  #subtitle {
+    font-size: 0.7em;
+    letter-spacing: 1px;
+    padding: 1px 6px;
+  }
+  
+  #score-box {
+    font-size: 1em;
+    padding: 6px 10px;
+    min-width: 80px;
+  }
+  
+  #level-bar {
+    padding: 6px 10px 8px 10px;
+    gap: 8px;
+  }
+  
+  #level-label {
+    font-size: 1em;
+    margin-right: 8px;
+  }
+  
+  #progress-bar {
+    height: 28px;
+  }
+  
+  .star {
+    font-size: 1.5em;
+  }
+  
+  #progress-track {
+    height: 6px;
+  }
+  
+  #start-btn {
+    padding: 12px 32px;
+    font-size: 1.2em;
+  }
+  
+  #info-card,
+  #call-to-action {
+    padding: 16px 20px;
+    min-width: 180px;
+    max-width: 250px;
+    font-size: 1em;
+  }
+  
+  .cta-btn {
+    padding: 5px 0;
+    font-size: 0.85em;
+    min-height: 32px;
+  }
+  
+  #replay-btn {
+    margin-top: 10px;
+    margin-bottom: 1px;
+    min-height: 36px;
+  }
+  
+  #lets-go {
+    font-size: 1.6em;
+    top: calc(180px * (100vw / 805));
   }
 }

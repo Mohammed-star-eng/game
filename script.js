@@ -248,7 +248,7 @@ function drawOnlyMountains() {
 let gameRunning = false;
 let score = 0;
 let level = 1;
-let speed = 6.5;
+let speed = 5.5;
 let ballY = 0, ballVY = 0, isJumping = false;
 let ballFallingIn = false; // NEW: true when animating initial fall
 let obstacles = [];
@@ -294,8 +294,8 @@ const letsGo = (() => {
 // --- GAME CONSTANTS ---
 const BALL_RADIUS = 22;
 // Fixed jump velocity and gravity for consistent, natural physics
-const JUMP_VELOCITY = -20;
-const GRAVITY = 1.0;
+const JUMP_VELOCITY = -15.0; // Adjusted for better jump feel
+const GRAVITY = 0.5; // Adjusted for more natural fall speed
 // Use a fixed ground Y position to prevent glitches
 let GROUND_Y = 228;
 
@@ -431,49 +431,147 @@ function showCTA() {
   triggerConfetti(); // Start confetti animation
 }
 
-// Confetti animation for CTA
+// Dramatic Confetti animation that covers the entire game area with typical confetti streamers
 function triggerConfetti() {
-  const confettiCanvas = document.getElementById('confetti-canvas');
-  if (!confettiCanvas) return;
-  const ctx = confettiCanvas.getContext('2d');
-  confettiCanvas.width = callToAction.offsetWidth;
-  confettiCanvas.height = 120;
-  let confettiPieces = [];
-  const colors = ['#FFD700', '#00eaff', '#21cbf3', '#FF6B35', '#F7931E', '#FFD029', '#FFA726', '#FF8A65'];
-  for (let i = 0; i < 60; i++) {
-    confettiPieces.push({
-      x: Math.random() * confettiCanvas.width,
-      y: Math.random() * -confettiCanvas.height,
-      r: 6 + Math.random() * 6,
-      d: Math.random() * 80,
-      color: colors[Math.floor(Math.random() * colors.length)],
-      tilt: Math.random() * 10 - 5,
-      tiltAngle: 0,
-      tiltAngleIncremental: (Math.random() * 0.07) + 0.05
-    });
+  // Create a full-screen confetti overlay
+  let confettiCanvas = document.getElementById('confetti-overlay');
+  if (!confettiCanvas) {
+    confettiCanvas = document.createElement('canvas');
+    confettiCanvas.id = 'confetti-overlay';
+    confettiCanvas.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1000;
+    `;
+    document.body.appendChild(confettiCanvas);
   }
+  
+  const ctx = confettiCanvas.getContext('2d');
+  confettiCanvas.width = window.innerWidth;
+  confettiCanvas.height = window.innerHeight;
+  
+  let confettiPieces = [];
+  const colors = [
+    '#FFD700', '#FFA500', '#FF6347', '#FF1493', '#00BFFF', '#00FFFF', 
+    '#ADFF2F', '#FF69B4', '#FF4500', '#32CD32', '#FF00FF', '#00FF00',
+    '#FFFF00', '#FF0000', '#0000FF', '#FFC0CB', '#87CEEB', '#98FB98'
+  ];
+  
+  // Create confetti shooting from all four sides
+  const sides = ['top', 'bottom', 'left', 'right'];
+  const particlesPerSide = 50;
+  
+  for (let side of sides) {
+    for (let i = 0; i < particlesPerSide; i++) {
+      let particle = {
+        r: 4 + Math.random() * 8, // Size for streamer width
+        d: Math.random() * 120,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        tilt: Math.random() * 20 - 10,
+        tiltAngle: 0,
+        tiltAngleIncremental: (Math.random() * 0.15) + 0.08,
+        opacity: 0.8 + Math.random() * 0.2,
+        life: 400 + Math.random() * 200, // Longer lifespan
+        maxLife: 400 + Math.random() * 200
+      };
+      
+      // Set starting position and velocity based on side
+      switch(side) {
+        case 'top':
+          particle.x = Math.random() * confettiCanvas.width;
+          particle.y = -30;
+          particle.velocityX = (Math.random() - 0.5) * 6;
+          particle.velocityY = Math.random() * 4 + 2;
+          break;
+        case 'bottom':
+          particle.x = Math.random() * confettiCanvas.width;
+          particle.y = confettiCanvas.height + 30;
+          particle.velocityX = (Math.random() - 0.5) * 6;
+          particle.velocityY = -(Math.random() * 4 + 2);
+          break;
+        case 'left':
+          particle.x = -30;
+          particle.y = Math.random() * confettiCanvas.height;
+          particle.velocityX = Math.random() * 4 + 2;
+          particle.velocityY = (Math.random() - 0.5) * 6;
+          break;
+        case 'right':
+          particle.x = confettiCanvas.width + 30;
+          particle.y = Math.random() * confettiCanvas.height;
+          particle.velocityX = -(Math.random() * 4 + 2);
+          particle.velocityY = (Math.random() - 0.5) * 6;
+          break;
+      }
+      
+      particle.gravity = 0.12;
+      particle.friction = 0.98;
+      confettiPieces.push(particle);
+    }
+  }
+  
   let angle = 0;
+  let time = 0;
+  
   function drawConfetti() {
     ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-    angle += 0.01;
-    for (let i = 0; i < confettiPieces.length; i++) {
+    angle += 0.02;
+    time += 0.1;
+    
+    for (let i = confettiPieces.length - 1; i >= 0; i--) {
       let p = confettiPieces[i];
-      p.y += (Math.cos(angle + p.d) + 2 + p.r / 2) * 0.7;
-      p.x += Math.sin(angle);
+      
+      // Update physics
+      p.velocityY += p.gravity;
+      p.velocityX *= p.friction;
+      p.velocityY *= p.friction;
+      p.x += p.velocityX;
+      p.y += p.velocityY;
+      
+      // Add wind/wave effect
+      p.x += Math.sin(angle + p.d * 0.01) * 1.2;
+      
+      // Update rotation
       p.tiltAngle += p.tiltAngleIncremental;
-      p.tilt = Math.sin(p.tiltAngle) * 12;
+      p.tilt = Math.sin(p.tiltAngle) * 18;
+      
+      // Update life and opacity
+      p.life--;
+      p.opacity = (p.life / p.maxLife) * 0.9;
+      
+      // Remove dead particles
+      if (p.life <= 0 || p.opacity <= 0) {
+        confettiPieces.splice(i, 1);
+        continue;
+      }
+      
+      // Draw typical confetti streamer
+      ctx.save();
+      ctx.globalAlpha = p.opacity;
       ctx.beginPath();
       ctx.lineWidth = p.r;
       ctx.strokeStyle = p.color;
-      ctx.moveTo(p.x + p.tilt + p.r / 2, p.y);
-      ctx.lineTo(p.x + p.tilt, p.y + p.tilt + 10);
+      ctx.moveTo(p.x + p.tilt + p.r/2, p.y);
+      ctx.lineTo(p.x + p.tilt, p.y + p.tilt + 12);
       ctx.stroke();
+      ctx.restore();
     }
-    confettiPieces = confettiPieces.filter(p => p.y < confettiCanvas.height + 20);
+    
     if (confettiPieces.length > 0) {
       requestAnimationFrame(drawConfetti);
+    } else {
+      // Clean up the overlay when animation is done
+      setTimeout(() => {
+        if (confettiCanvas && confettiCanvas.parentNode) {
+          confettiCanvas.parentNode.removeChild(confettiCanvas);
+        }
+      }, 1000);
     }
   }
+  
   drawConfetti();
 }
 
@@ -694,7 +792,7 @@ function gameLoop() {
       // Level up every 60 points
       if (score > 0 && score % 60 === 0 && level < 3) {
         level++;
-        speed += 1.5; // Faster speed increase per level
+        speed += 1.7; // Faster speed increase per level
         updateLevelDisplay();
         showLetsGo();
         resetLevel();
@@ -743,7 +841,7 @@ startBtn.addEventListener('click', () => {
   infoCard.classList.add('hidden');
   score = 0;
   level = 1;
-  speed = 6.0; // Faster starting speed
+  speed = 3.0; // Starting speed when game begins
   usedFacts = [];
   updateScoreDisplay();
   updateLevelDisplay();
